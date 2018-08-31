@@ -13,6 +13,6 @@
 		</ul>
 
 <%-- 		<p><a href="${pageContext.request.contextPath}/new">新規メッセージの投稿</a></p> --%>
-			<p><a href="<c:url value='/new' />"></a></p>
+			<p><a href="<c:url value='/new' />">新規メッセージの投稿</a></p>
 	</c:param>
 </c:import>
