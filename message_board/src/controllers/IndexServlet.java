@@ -34,14 +34,28 @@ public class IndexServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 投稿内容の取得
+		// EntityManager取得
 		EntityManager em = DBUtil.createEntityManager();
-		List<Message> messages = em.createNamedQuery("getAllMessages", Message.class).getResultList();
+		// 現在のページを取得する
+		int page = 1;
+		try {
+			page = Integer.parseInt(request.getParameter("page"));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		// 現在のページ内での投稿内容を取得する
+		List<Message> messages = em.createNamedQuery("getAllMessages", Message.class)
+															 .setFirstResult(8 * (page-  1)).setMaxResults(8).getResultList();
+		// 現在の投稿件数を取得する
+		long messages_count = (long)em.createNamedQuery("getMessagesCount", Long.class)
+				                                                .getSingleResult();
 		em.close();
 		// 投稿内容とフラッシュを送る
-		request.setAttribute("messages", messages);
+		request.setAttribute("messages", messages);	// 現在のページ内での投稿内容
+		request.setAttribute("messages_count", messages_count); // 現在の投稿件数
+		request.setAttribute("page", page);	// 現在のページ
 		HttpSession session = request.getSession();
-		if (session.getAttribute("flush") != null) {
+		if (session.getAttribute("flush") != null) { // フラッシュ
 			request.setAttribute("flush", session.getAttribute("flush"));
 			session.removeAttribute("flush");
 		}
