@@ -49,7 +49,7 @@ public class UpdateServlet extends HttpServlet {
             em.getTransaction().begin();
             em.getTransaction().commit();
             em.close();
-
+            session.setAttribute("flush", "更新が完了しました。");
             session.removeAttribute("message_id");
             response.sendRedirect(request.getContextPath() + "/index");
 		}
